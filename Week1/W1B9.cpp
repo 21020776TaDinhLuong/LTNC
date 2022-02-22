@@ -2,12 +2,12 @@
 using namespace std;
 int main()
 {
-    float a, b, c;
+    double a, b, c;
     cin >> a >> b >> c;
     if (a+b>c &&a+c>b &&b+c>a)
     {
-        float p = (a+b+c)/2;
-        float s=sqrt(p*(p-a)*(p-b)*(p-c));
+        double p = (a+b+c)/2;
+        double s=sqrt(p*(p-a)*(p-b)*(p-c));
         cout<<fixed<<setprecision(2)<<s;
     }
     else
