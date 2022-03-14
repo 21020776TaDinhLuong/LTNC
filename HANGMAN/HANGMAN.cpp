@@ -1,138 +1,169 @@
-#include<bits/stdc++.h>
+#include <iostream>
+#include <cstdlib>
+#include <ctime>
+#include <cctype>
+#include <vector>
+#include <fstream>
+#include <algorithm>
+
 using namespace std;
-const int MAX_BAD_NUMBER =7;
-const string WORD_LIST[]={"dog","cat","human","monkey","hourse","goat","fish","shrimp","frog","dragonfly"};
-const string FIGURE[]={
- " ------------- \n"
- " |             \n"
- " |             \n"
- " |             \n"
- " |             \n"
- " |             \n"
- " ----- \n",
- " ------------- \n"
- " |           | \n"
- " |             \n"
- " |             \n"
- " |             \n"
- " |             \n"
- " ----- \n",
- " ------------- \n"
- " |           | \n"
- " |           O \n"
- " |             \n"
- " |             \n"
- " |             \n"
- " ----- \n",
- " ------------- \n"
- " |           | \n"
- " |           O \n"
- " |           | \n"
- " |             \n"
- " |             \n"
- " ----- \n",
- " ------------- \n"
- " |           | \n"
- " |           O \n"
- " |          /| \n"
- " |             \n"
- " |             \n"
- " ----- \n",
- " ------------- \n"
- " |           |    \n"
- " |           O    \n"
- " |          /|\\  \n"
- " |             \n"
- " |             \n"
- " ----- \n",
- " ------------- \n"
- " |           |    \n"
- " |           O    \n"
- " |          /|\\  \n"
- " |          /     \n"
- " |             \n"
- " ----- \n",
-  " ------------- \n"
- " |           |    \n"
- " |           O    \n"
- " |          /|\\  \n"
- " |          / \\  \n"
- " |             \n"
- " ----- \n"
- };
-const int WORD_COUNT = sizeof(WORD_LIST)/sizeof(string);
-int trueGuess=2;
-string wrongGuessedWord="";
-string chooseWord()
-{
-	int randomIndex= rand()%WORD_COUNT;
-	return WORD_LIST[randomIndex];
-}
-void render(string& guessedWord, const int& badWordCount)
-{
-    cout<<FIGURE[badWordCount]<<endl;
-	cout << guessedWord<<endl;
-	if (trueGuess==1)
-    {
-        cout<<"Correct! "<<endl;
-    }
-    else if (trueGuess==0)
-    {
-        cout<<"Incorrect!Your wrong guessed word is "<<wrongGuessedWord<<"."<<endl;
 
-    }
-	cout << "Number of wrong guesses: " << badWordCount<<endl;
-}
-void update(string& guessedWord, const string& secretWord, char guess)
-{
-	for (int i = 0; i < secretWord.size(); i++)
-	{
-		if (secretWord[i] == guess)
-		{
-			guessedWord[i] = guess;
-		}
-	}
-}
-bool contain(const string& secretWord,char guess)
-{
-    size_t found = secretWord.find_first_of(guess);
-    return (found != string::npos);
-}
-char guessAWord()
-{
-    char c;
-    cout<<"Your guess: ";
-    cin>>c;
-    return tolower(c);
-}
-void topScreen()
-{
-    cout<<"\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n";
-}
+const int MAX_BAD_GUESSES = 7;
+const char DATA_FILE[] = "data/Ogden_Picturable_200.txt";
 
-string secretWord = chooseWord();
-string guessedWord = string(secretWord.size(), '-');
-int badWordCount = 0;
+string chooseWord(const char* fileName);
+void renderGame(const string& guessedWord, const string& badGuesses);
+char readAGuess();
+bool contains(const string& word, char guess);
+void updateGuessedWord(string& guessedWord, const string& word, char guess);
+
 int main()
 {
     srand(time(0));
-    topScreen();
-	do {
-		render(guessedWord, badWordCount);
-		char guess = guessAWord();
-		if (contain(secretWord, guess))
-		{
-			update(guessedWord, secretWord,guess);
-			trueGuess=1;
-		}
-		else
-        {
-            badWordCount++;
-            trueGuess=0;
-            wrongGuessedWord=wrongGuessedWord+guess;
+    string word = chooseWord(DATA_FILE);
+    if (word.length() < 1) {
+        cout << "Error reading vocabulary file " << DATA_FILE;
+        return -1;
+    }
+    string guessedWord = string(word.length(), '-');
+    string badGuesses = "";
+
+    do {
+        renderGame(guessedWord, badGuesses);
+        char guess = readAGuess();
+        if (contains(word, guess))
+            updateGuessedWord(guessedWord, word, guess);
+        else {
+            badGuesses += guess;
         }
-	} while (badWordCount < MAX_BAD_NUMBER && guessedWord != secretWord);
-	render(guessedWord, badWordCount);
-	if (badWordCount < MAX_BAD_NUMBER) cout << "Congratulations!You win!";
-	else cout << "You lost. The correct word is " << secretWord;
+    } while (badGuesses.length() < MAX_BAD_GUESSES && word != guessedWord);
+
+    renderGame(guessedWord, badGuesses);
+    if (badGuesses.length() < MAX_BAD_GUESSES)
+        cout << "Congratulations! You win!";
+    else
+        cout << "You lost. The correct word is " << word;
+
+    return 0;
+}
+
+string getLowerCaseString(const string& s)
+{
+    string res = s;
+    transform(s.begin(), s.end(), res.begin(), ::tolower);
+    return res;
+}
+
+string chooseWord(const char* fileName)
+{
+    vector<string> wordList;
+    ifstream file(fileName);
+    if (file.is_open()) {
+        string word;
+        while (file >> word) {
+            wordList.push_back(word);
+        }
+        file.close();
+    }
+    if (wordList.size() > 0) {
+        int randomIndex = rand() % wordList.size();
+        return getLowerCaseString(wordList[randomIndex]);
+    }
+    else return "";
+}
+
+const string FIGURE[] = {
+        "   -------------    \n"
+        "   |                \n"
+        "   |                \n"
+        "   |                \n"
+        "   |                \n"
+        "   |     \n"
+        " -----   \n",
+        "   -------------    \n"
+        "   |           |    \n"
+        "   |                \n"
+        "   |                \n"
+        "   |                \n"
+        "   |     \n"
+        " -----   \n",
+        "   -------------    \n"
+        "   |           |    \n"
+        "   |           O    \n"
+        "   |                \n"
+        "   |                \n"
+        "   |     \n"
+        " -----   \n",
+        "   -------------    \n"
+        "   |           |    \n"
+        "   |           O    \n"
+        "   |           |    \n"
+        "   |                \n"
+        "   |     \n"
+        " -----   \n",
+        "   -------------    \n"
+        "   |           |    \n"
+        "   |           O    \n"
+        "   |          /|    \n"
+        "   |                \n"
+        "   |     \n"
+        " -----   \n",
+        "   -------------    \n"
+        "   |           |    \n"
+        "   |           O    \n"
+        "   |          /|\\  \n"
+        "   |                \n"
+        "   |     \n"
+        " -----   \n",
+        "   -------------    \n"
+        "   |           |    \n"
+        "   |           O    \n"
+        "   |          /|\\  \n"
+        "   |          /     \n"
+        "   |     \n"
+        " -----   \n",
+        "   -------------    \n"
+        "   |           |    \n"
+        "   |           O    \n"
+        "   |          /|\\  \n"
+        "   |          / \\  \n"
+        "   |     \n"
+        " -----   \n"
+};
+
+void renderGame(const string& guessedWord, const string& badGuesses)
+{
+    const int PATCH_LINES = 30;
+    for (int i = 0; i < PATCH_LINES; i++) cout << endl;
+
+    int badGuessCount = badGuesses.length();
+    cout << FIGURE[badGuessCount] << endl;
+    cout << "Secret word: " << guessedWord << endl;
+    if (badGuessCount > 0) {
+        cout << "You've made " << badGuessCount << " wrong ";
+        cout << (badGuessCount == 1 ? "guess" : "guesses");
+        cout << ": " << badGuesses << endl;
+    }
+}
+
+char readAGuess()
+{
+    char input;
+    cout << "Your guess: ";
+    cin >> input;
+    return tolower(input);
+}
+
+bool contains(const string& word, char c)
+{
+    return (word.find_first_of(c) != string::npos);
+}
+
+void updateGuessedWord(string& guessedWord, const string& word, char guess)
+{
+    for (int i = word.length() - 1; i >= 0; i--) {
+        if (word[i] == guess) {
+            guessedWord[i] = guess;
+        }
+    }
 }
