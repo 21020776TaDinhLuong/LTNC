@@ -20,6 +20,14 @@ struct ComplexNumber
     {
         return ComplexNumber(real+other.real,virt+other.virt);
     }
+    ComplexNumber sub(ComplexNumber& other)
+    {
+        return ComplexNumber(real-other.real,virt-other.virt);
+    }
+    ComplexNumber multiply(ComplexNumber& other)
+    {
+        return ComplexNumber(real*other.real - virt*other.virt,real*other.virt+virt*other.real);
+    }
 } ;
 int main()
 {
