@@ -4,9 +4,9 @@ class Employee
 {
 public:
     string name;
-    int yearOfJoining;
+    string yearOfJoining;
     string address;
-    void input(string n="",int y=0, string a="")
+    void input(string n="",string y="", string a="")
     {
         name=n;
         yearOfJoining=y;
@@ -23,9 +23,14 @@ int main()
     for (int i=0;i<3;i++)
     {
         string s;
-        int y;
+        string y;
         string a;
-        cin>>s>>y>>a;
+        getline (cin,s);
+
+        getline(cin,y);
+
+        getline(cin,a);
+
         employee[i].input(s,y,a);
     }
     cout<<"Name"<<"   "<<"Year Of Joining"<<"   "<<"Address"<<endl;
