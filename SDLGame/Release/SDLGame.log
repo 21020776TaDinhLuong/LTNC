@@ -4,12 +4,12 @@
   CommonFunction.cpp
   Extension.cpp
   main.cpp
-C:\Users\DELL\OneDrive - vnu.edu.vn\Documents\SDL\SDLGame\main.cpp(19,15): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+C:\Users\DELL\OneDrive - vnu.edu.vn\Documents\LTNC\SDLGame\main.cpp(19,15): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
   TextObject.cpp
   Generating code
-C:\Users\DELL\OneDrive - vnu.edu.vn\Documents\SDL\SDLGame\Extension.cpp(45): warning C4715: 'readNumberListFromFile': not all control paths return a value
+C:\Users\DELL\OneDrive - vnu.edu.vn\Documents\LTNC\SDLGame\Extension.cpp(45): warning C4715: 'readNumberListFromFile': not all control paths return a value
   497 of 507 functions (98.0%) were compiled, the rest were copied from previous compilation.
     64 functions were new in current compilation
     2 functions had inline decision re-evaluated but remain unchanged
   Finished generating code
-  SDLGame.vcxproj -> C:\Users\DELL\OneDrive - vnu.edu.vn\Documents\SDL\SDLGame\Release\SDLGame.exe
+  SDLGame.vcxproj -> C:\Users\DELL\OneDrive - vnu.edu.vn\Documents\LTNC\SDLGame\Release\SDLGame.exe
